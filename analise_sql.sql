@@ -8,7 +8,7 @@ DATE(data_inicio) = "2023-04-01";
 -- 2. Qual o tipo de chamado que teve mais reclamações no dia 01/04/2023?
 SELECT tb_a.tipo tipo, COUNT(*) qtd_chamados
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
-WHERE data_particao = "2023-04-01" AND DATE(data_inicio) = DATE("2023-04-01")
+WHERE data_particao = "2023-04-01" AND DATE(data_inicio) = "2023-04-01"
 GROUP BY tb_a.tipo
 ORDER BY qtd_chamados DESC
 LIMIT 1;
@@ -18,7 +18,7 @@ LIMIT 1;
 SELECT nome bairro, COUNT(*) quantidade
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
 JOIN `datario.dados_mestres.bairro` tb_b ON tb_a.id_bairro = tb_b.id_bairro 
-WHERE data_particao = "2023-04-01" AND DATE(data_inicio) = DATE("2023-04-01") 
+WHERE data_particao = "2023-04-01" AND DATE(data_inicio) = "2023-04-01" 
 GROUP BY nome
 ORDER BY quantidade DESC
 LIMIT 3;
@@ -35,7 +35,8 @@ LIMIT 1;
 -- RESPOSTA: Zona Norte com 25 chamados.
 
 -- 5. Existe algum chamado aberto nesse dia que não foi associado a um bairro ou subprefeitura na tabela de bairros? Se sim, por que isso acontece?
-SELECT * FROM `datario.administracao_servicos_publicos.chamado_1746` AS tb_a
+SELECT *
+FROM `datario.administracao_servicos_publicos.chamado_1746` AS tb_a
 LEFT JOIN `datario.dados_mestres.bairro` AS tb_b ON tb_a.id_bairro = tb_b.id_bairro
 WHERE data_particao = "2023-04-01" AND DATE(tb_a.data_inicio) = "2023-04-01"
 AND (tb_b.id_bairro IS NULL OR tb_b.subprefeitura IS NULL)
@@ -47,16 +48,15 @@ Isto ocorre por que a natureza do chamado (chamados internos) podem envolver ati
 SELECT COUNT(*) qtd_chamados
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
 WHERE data_particao BETWEEN "2022-01-01" AND "2023-12-31"
-AND tb_a.subtipo = "Perturbação do sossego";
+AND tb_a.id_subtipo = "5071"; --id_subtipo = 5071 "Perturbação do sossego"
 -- RESPOSTA: 42408 chamados.
 
 -- 7. Selecione os chamados com esse subtipo que foram abertos durante os eventos contidos na tabela de eventos (Reveillon, Carnaval e Rock in Rio).
-SELECT tb_a.id_chamado, tb_c.evento, tb_a.subtipo, tb_a.data_inicio, tb_c.data_inicial,tb_c.data_final
+SELECT tb_a.id_chamado
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
 INNER JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
 ON DATE(tb_a.data_inicio) BETWEEN tb_c.data_inicial AND tb_c.data_final
-WHERE tb_a.subtipo = "Perturbação do sossego"
-AND tb_c.evento IN ('Reveillon', 'Carnaval', 'Rock in Rio');
+WHERE tb_a.id_subtipo = "5071"; --id_subtipo = 5071 "Perturbação do sossego"
 -- RESPOSTA: 1212 chamados com o subtipo "Perturbação do sossego" foram abertos durante o Reveillon, Carnaval e Rock in Rio.
 
 -- 8. Quantos chamados desse subtipo foram abertos em cada evento?
@@ -64,7 +64,7 @@ SELECT tb_c.evento eventos, COUNT(*) qtd_chamados
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
 INNER JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
 ON DATE(tb_a.data_inicio) BETWEEN tb_c.data_inicial AND tb_c.data_final
-WHERE tb_a.subtipo = "Perturbação do sossego"
+WHERE tb_a.id_subtipo = "5071"
 GROUP BY tb_c.evento;
 -- RESPOSTA: Rock in Rio teve 834 chamados, Carnaval teve 241 chamados e Reveillon teve 137 chamados.
 
@@ -72,3 +72,7 @@ GROUP BY tb_c.evento;
 
 
 -- 10. Compare as médias diárias de chamados abertos desse subtipo durante os eventos específicos (Reveillon, Carnaval e Rock in Rio) e a média diária de chamados abertos desse subtipo considerando todo o período de 01/01/2022 até 31/12/2023.
+
+
+
+
