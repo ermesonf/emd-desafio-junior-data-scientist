@@ -57,7 +57,7 @@ FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
 INNER JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
 ON DATE(tb_a.data_inicio) BETWEEN tb_c.data_inicial AND tb_c.data_final
 WHERE tb_a.id_subtipo = "5071"; --id_subtipo = 5071 "Perturbação do sossego"
--- RESPOSTA: 1212 chamados com o subtipo "Perturbação do sossego" foram abertos durante o Reveillon, Carnaval e Rock in Rio.
+-- RESPOSTA: 1212 chamados do subtipo "Perturbação do sossego" foram abertos durante o Reveillon, Carnaval e Rock in Rio.
 
 -- 8. Quantos chamados desse subtipo foram abertos em cada evento?
 SELECT tb_c.evento eventos, COUNT(*) qtd_chamados
@@ -69,10 +69,29 @@ GROUP BY tb_c.evento;
 -- RESPOSTA: Rock in Rio teve 834 chamados, Carnaval teve 241 chamados e Reveillon teve 137 chamados.
 
 -- 9. Qual evento teve a maior média diária de chamados abertos desse subtipo?
-
+SELECT tb_c.evento eventos,
+ROUND(COUNT(*) / COUNT(DISTINCT DATE(tb_a.data_inicio)),0) media_diaria_chamados
+FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
+INNER JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
+ON DATE(tb_a.data_inicio) BETWEEN tb_c.data_inicial AND tb_c.data_final
+WHERE tb_a.id_subtipo = "5071"
+GROUP BY tb_c.evento
+ORDER BY media_diaria_chamados DESC
+LIMIT 1;
+-- RESPOSTA: Rock in Rio com 119 chamados em média por dia do subtipo "Perturbação do sossego".
 
 -- 10. Compare as médias diárias de chamados abertos desse subtipo durante os eventos específicos (Reveillon, Carnaval e Rock in Rio) e a média diária de chamados abertos desse subtipo considerando todo o período de 01/01/2022 até 31/12/2023.
-
-
-
-
+SELECT tb_c.evento eventos,
+ROUND(COUNT(*) / COUNT(DISTINCT DATE(tb_a.data_inicio)), 2) AS media_diaria_chamados
+FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
+INNER JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
+ON DATE(tb_a.data_inicio) BETWEEN tb_c.data_inicial AND tb_c.data_final
+WHERE tb_a.id_subtipo = "5071"
+GROUP BY tb_c.evento
+UNION ALL
+SELECT "01/01/2022 até 31/12/2023" AS evento, 
+ROUND(COUNT(*) / COUNT(DISTINCT DATE(tb_a.data_inicio)),2) AS media_diaria_chamados
+FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
+WHERE id_subtipo = "5071"
+AND DATE(data_inicio) BETWEEN '2022-01-01' AND '2023-12-31';
+-- RESPOSTA: fazer variação percentual...
