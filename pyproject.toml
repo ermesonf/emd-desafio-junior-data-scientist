@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "emd-desafio-junior-data-scientist"
+version = "0.1.0"
+description = ""
+authors = ["ermesonf <ermeson.freitas@hotmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+basedosdados = "1.5.7"
+google-api-core = "1.33.2"
+google-auth = "1.35.0"
+google-auth-oauthlib = "0.5.3"
+google-cloud-bigquery = "1.28.0"
+google-cloud-bigquery-storage = "1.1.0"
+google-cloud-core = "1.7.3"
+google-cloud-storage = "1.31.2"
+pandas = "1.2.4"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

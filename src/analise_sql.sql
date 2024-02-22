@@ -94,9 +94,8 @@ ROUND(COUNT(*) / COUNT(DISTINCT DATE(tb_a.data_inicio)),2) AS media_diaria_chama
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
 WHERE id_subtipo = "5071"
 AND DATE(data_inicio) BETWEEN '2022-01-01' AND '2023-12-31';
-/* RESPOSTA: Durante o período de 01/01/2022 a 31/12/2023, com uma média de 63 chamados diários,
- o Rock in Rio se destacou com a maior média diária de chamados (119),
- representando um aumento de 88,5%. Por outro lado,
- o Carnaval teve uma média de 60 chamados, uma redução de 4,66%,
-  enquanto o Reveillon registrou uma média de 46 chamados, uma redução de 27,73%.
+/* RESPOSTA: Durante o período de 01/01/2022 a 31/12/2023, a média diária de chamados foi de 63.
+Em comparação, o Rock in Rio apresentou a maior média diária com 119 chamados, um aumento de 88,5%. 
+O Carnaval teve uma média de 60 chamados, uma redução de 4,6%, 
+enquanto o Reveillon registrou uma média de 46 chamados, uma redução de 27,7%.
 */
