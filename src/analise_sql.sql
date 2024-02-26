@@ -19,7 +19,7 @@ SELECT nome bairro, COUNT(*) quantidade
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
 JOIN `datario.dados_mestres.bairro` tb_b ON tb_a.id_bairro = tb_b.id_bairro 
 WHERE data_particao = "2023-04-01" AND DATE(data_inicio) = "2023-04-01" 
-GROUP BY nome
+GROUP BY bairro
 ORDER BY quantidade DESC
 LIMIT 3;
 -- RESPOSTA: Engenho de Dentro com 8 chamados, Campo Grande e Leblon com 6 chamados.
@@ -35,7 +35,7 @@ LIMIT 1;
 -- RESPOSTA: Zona Norte com 25 chamados.
 
 -- 5. Existe algum chamado aberto nesse dia que não foi associado a um bairro ou subprefeitura na tabela de bairros? Se sim, por que isso acontece?
-SELECT *
+SELECT tb_a.id_chamado,tb_a.id_bairro, tb_b.nome, tb_b.subprefeitura
 FROM `datario.administracao_servicos_publicos.chamado_1746` AS tb_a
 LEFT JOIN `datario.dados_mestres.bairro` AS tb_b ON tb_a.id_bairro = tb_b.id_bairro
 WHERE data_particao = "2023-04-01" AND DATE(tb_a.data_inicio) = "2023-04-01"
@@ -54,15 +54,16 @@ AND tb_a.id_subtipo = "5071"; --id_subtipo = 5071 "Perturbação do sossego"
 -- 7. Selecione os chamados com esse subtipo que foram abertos durante os eventos contidos na tabela de eventos (Reveillon, Carnaval e Rock in Rio).
 SELECT tb_a.id_chamado
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
-INNER JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
+JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
 ON DATE(tb_a.data_inicio) BETWEEN tb_c.data_inicial AND tb_c.data_final
-WHERE tb_a.id_subtipo = "5071"; --id_subtipo = 5071 "Perturbação do sossego"
+WHERE tb_a.id_subtipo = "5071"
+and data_particao BETWEEN "2022-01-01" AND "2023-12-31"; --id_subtipo = 5071 "Perturbação do sossego"
 -- RESPOSTA: 1212 chamados do subtipo "Perturbação do sossego" foram abertos durante o Reveillon, Carnaval e Rock in Rio.
 
 -- 8. Quantos chamados desse subtipo foram abertos em cada evento?
 SELECT tb_c.evento eventos, COUNT(*) qtd_chamados
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
-INNER JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
+JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
 ON DATE(tb_a.data_inicio) BETWEEN tb_c.data_inicial AND tb_c.data_final
 WHERE tb_a.id_subtipo = "5071"
 GROUP BY tb_c.evento;
@@ -72,7 +73,7 @@ GROUP BY tb_c.evento;
 SELECT tb_c.evento eventos,
 ROUND(COUNT(*) / COUNT(DISTINCT DATE(tb_a.data_inicio)),0) media_diaria_chamados
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
-INNER JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
+JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
 ON DATE(tb_a.data_inicio) BETWEEN tb_c.data_inicial AND tb_c.data_final
 WHERE tb_a.id_subtipo = "5071"
 GROUP BY tb_c.evento
@@ -84,7 +85,7 @@ LIMIT 1;
 SELECT tb_c.evento eventos,
 ROUND(COUNT(*) / COUNT(DISTINCT DATE(tb_a.data_inicio)), 2) AS media_diaria_chamados
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
-INNER JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
+JOIN `datario.turismo_fluxo_visitantes.rede_hoteleira_ocupacao_eventos` tb_c 
 ON DATE(tb_a.data_inicio) BETWEEN tb_c.data_inicial AND tb_c.data_final
 WHERE tb_a.id_subtipo = "5071"
 GROUP BY tb_c.evento
@@ -94,8 +95,8 @@ ROUND(COUNT(*) / COUNT(DISTINCT DATE(tb_a.data_inicio)),2) AS media_diaria_chama
 FROM `datario.administracao_servicos_publicos.chamado_1746` tb_a
 WHERE id_subtipo = "5071"
 AND DATE(data_inicio) BETWEEN '2022-01-01' AND '2023-12-31';
-/* RESPOSTA: Durante o período de 01/01/2022 a 31/12/2023, a média diária de chamados foi de 63.
-Em comparação, o Rock in Rio apresentou a maior média diária com 119 chamados, um aumento de 88,5%. 
-O Carnaval teve uma média de 60 chamados, uma redução de 4,6%, 
-enquanto o Reveillon registrou uma média de 46 chamados, uma redução de 27,7%.
+/* RESPOSTA: Durante o período de 01/01/2022 a 31/12/2023, com uma média de 63 chamados diários, 
+o Rock in Rio se destacou com a maior média diária de chamados (119), 
+representando um aumento de 88,5%. Por outro lado, o Carnaval teve uma média de 60 chamados, 
+uma redução de 4,66%, enquanto o Reveillon registrou uma média de 46 chamados, uma redução de 27,73%.
 */

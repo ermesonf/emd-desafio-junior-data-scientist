@@ -3,13 +3,15 @@
 
 ## Descrição
 
-Bem-vindo a solução do desafio técnico para a vaga de Cientista de Dados Júnior no Escritório Municipal de Dados do Rio de Janeiro!
+Bem-vindo (a) a minha solução do desafio técnico para a vaga de Cientista de Dados Júnior do Escritório Municipal de Dados do Rio de Janeiro!
 
 ### Objetivo
 
 O objetivo deste desafio é realizar análises exploratórias em conjuntos de dados públicos disponíveis no BigQuery, responder a perguntas específicas sobre esses dados utilizando SQL e Python, e criar visualizações informativas e visualmente atraentes.
 
 ### Instalação e Configuração
+
+Para 
 
 1. Clone o repositório:
 
@@ -37,3 +39,6 @@ poetry shell
 ```bash
 poetry install
 ```
+#
+### Visualização de dados
+Para visualizar o painel desenvolvido, acesse o link:  [Dashboard - Looker Studio](https://lookerstudio.google.com/s/h3-uy2Lkl5o)
